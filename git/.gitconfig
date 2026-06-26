@@ -1,0 +1,24 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = Alex N'Guessan
+	email = alexmarcaureln@gmail.com
+	useConfigOnly = true
+	signingkey = 569B826B6D7018D2
+[init]
+	defaultBranch = main
+[http]
+	postBuffer = 157286400
+	version = HTTP/2
+[core]
+	excludesfile = ~/.gitignore_global
+[commit]
+	template = ~/.stCommitMsg
+	gpgsign = true
+[gpg]
+	program = gpg
+[tag]
+	gpgSign = true

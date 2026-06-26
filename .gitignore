@@ -1,0 +1,8 @@
+.zshrc.local
+.gitconfig.local
+.DS_Store
+.tmux/plugins/
+**/data/
+*.log
+config/.config/opencode/plugins/gk-hooks.js
+config/.config/gh/hosts.yml
