@@ -45,5 +45,6 @@
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
+  "preferredNotifChannel": "terminal_bell",
   "model": "opus[1m]"
 }

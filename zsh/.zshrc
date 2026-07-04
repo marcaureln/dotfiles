@@ -17,6 +17,13 @@ export VOLTA_FEATURE_PNPM=1       # support pnpm dans Volta
 export LESS='-R --mouse --wheel-lines=3'
 
 # ------------------------------------------------------------
+# History (set here — Ubuntu's /etc/zshrc doesn't, unlike macOS)
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
+
+# ------------------------------------------------------------
 # Completions
 fpath=($HOME/.zsh $HOME/.docker/completions $fpath)
 zstyle ':completion:*:*:git:*' script $HOME/.zsh/git-completion.bash
