@@ -1,5 +1,5 @@
 # Prompt
-eval "$(starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
 
 # ------------------------------------------------------------
 # Environnement & PATH
@@ -8,7 +8,7 @@ export BUN_INSTALL="$HOME/.bun"
 export RULEKIT_PATH="$HOME/vue-rulekit"
 export CLAUDE_CODE_NO_FLICKER=1
 
-export PATH="/opt/homebrew/lib/ruby/gems/4.0.0/bin:~/.gem/ruby/4.0.0/bin:$HOME/flutter/bin:$VOLTA_HOME/bin:$BUN_INSTALL/bin:$HOME/.rvm/bin:/opt/homebrew/opt/ruby/bin:/usr/local/opt/libpq/bin:$PATH"
+export PATH="/opt/homebrew/lib/ruby/gems/4.0.0/bin:$HOME/.gem/ruby/4.0.0/bin:$HOME/fvm/default/bin:$VOLTA_HOME/bin:$BUN_INSTALL/bin:$HOME/.rvm/bin:/opt/homebrew/opt/ruby/bin:/usr/local/opt/libpq/bin:$PATH"
 
 # Activation d’options utiles
 export VOLTA_FEATURE_PNPM=1       # support pnpm dans Volta
@@ -50,6 +50,11 @@ alias tf="terraform"
 alias dbt_env="source $HOME/venv/dbt/bin/activate"
 alias cc="claude --dangerously-skip-permissions"
 alias ccc="claude --dangerously-skip-permissions -c"
+alias t='tmux new-session -A -s "$(basename "$PWD" | tr -d .)"'
+alias tml="tmux list-sessions"
+alias tma="tmux attach"
+alias tms="tmux new-session -s"
+alias tk='tmux kill-session -t'
 
 export GPG_TTY=$(tty)
 
@@ -84,8 +89,11 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
-# History-based auto-complete
-[[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# History-based auto-complete (brew on macOS, apt on Linux)
+for f in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+         /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do
+  [[ -f $f ]] && source "$f" && break
+done
 
 # AWS helpers (ssm, etc.) — see ~/.zsh/aws.zsh
 [ -f ~/.zsh/aws.zsh ] && source ~/.zsh/aws.zsh

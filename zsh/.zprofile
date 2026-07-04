@@ -1,13 +1,8 @@
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-
-# Added by Toolbox App
-export PATH="$PATH:~/Library/Application Support/JetBrains/Toolbox/scripts"
-
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Created by `pipx` on 2023-12-06 18:33:29
-export PATH="$PATH:~/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 # Added by OrbStack: command-line tools and integration
 # This won't be added again if you remove it.
