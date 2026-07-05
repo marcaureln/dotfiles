@@ -22,8 +22,5 @@
 	program = gpg
 [tag]
 	gpgSign = true
-# Machine-local overrides (e.g. disable signing on hosts without the GPG key).
-# Missing file is silently ignored, so this is a no-op on machines that lack it.
-# Read last, so its values win over the settings above.
 [include]
 	path = ~/.gitconfig.local
