@@ -13,15 +13,14 @@ scripts/
 ## Commands
 
 ```bash
-bun run test              # Run statusline tests
 bun run lint              # Lint scripts
 ```
 
 ### Per-Package Commands
 
-| Package | Test | Start |
-|---------|------|-------|
-| statusline | `bun run statusline:test` | `bun run statusline:start` |
+| Package | Start |
+|---------|-------|
+| statusline | `bun run statusline:start` |
 
 ## Cross-Platform Support
 
@@ -34,4 +33,3 @@ All packages support macOS, Linux, and Windows (via WSL):
 
 - `picocolors` - Terminal colors
 - `@biomejs/biome` - Linting/formatting
-- `bun:test` - Testing

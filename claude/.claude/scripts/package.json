@@ -2,10 +2,7 @@
 	"name": "scripts",
 	"type": "module",
 	"scripts": {
-		"test": "bun test statusline",
 		"statusline:start": "bun statusline/src/index.ts",
-		"statusline:test": "bun test statusline",
-		"statusline:test-fixtures": "bun statusline/test-with-fixtures.ts",
 		"statusline:config": "bun statusline/src/commands/interactive-config.ts",
 		"statusline:lint": "biome check --write statusline",
 		"lint": "biome check --write .",

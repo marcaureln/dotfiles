@@ -60,12 +60,10 @@ Claude Code hook -> stdin JSON -> index.ts
 ## Development
 
 ```bash
-bun run test
-bun run statusline:test-fixtures
 bun run statusline:config
 ```
 
-Manual test:
+Manual check:
 
 ```bash
 echo '{ ... }' | bun run statusline:start
