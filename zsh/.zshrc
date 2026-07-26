@@ -59,10 +59,17 @@ alias cc="claude --dangerously-skip-permissions"
 alias ccc="claude --dangerously-skip-permissions -c"
 alias cx="codex"
 alias cxc="codex resume --last"
-alias t='tmux new-session -A -s "$(basename "$PWD" | tr -d .)"'
+t() {
+  local name="$(basename "${1:-$PWD}" | tr -d .)"
+  tmux has-session -t "=$name" 2>/dev/null || tmux new-session -d -s "$name"
+  if [ -n "$TMUX" ]; then
+    tmux switch-client -t "=$name"
+  else
+    tmux attach -t "=$name"
+  fi
+}
 alias tml="tmux list-sessions"
 alias tma="tmux attach"
-alias tms="tmux new-session -s"
 alias tk='tmux kill-session -t'
 
 export GPG_TTY=$(tty)
