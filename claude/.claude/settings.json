@@ -4,10 +4,18 @@
     "pr": ""
   },
   "permissions": {
-    "deny": [],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | bash)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ],
     "ask": [],
     "defaultMode": "bypassPermissions"
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -40,11 +48,11 @@
       }
     }
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
+  "preferredNotifChannel": "terminal_bell",
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
-  "agentPushNotifEnabled": true,
-  "preferredNotifChannel": "terminal_bell",
-  "model": "opus[1m]"
+  "agentPushNotifEnabled": true
 }
