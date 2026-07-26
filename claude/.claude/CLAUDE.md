@@ -53,4 +53,3 @@
 - `gh` is installed. Use it for anything GitHub.
 - `knip` to find unused code after large changes, except in Nuxt.
 - Package manager: pnpm, unless the project has a package-lock.json (npm) or a yarn.lock (yarn).
-  - Aliases pick the right one automatically: `ni` install, `nun` uninstall, `nb` build, `t` all tests, `nr <script>` for anything else.
