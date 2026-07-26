@@ -55,6 +55,7 @@ export interface RawStatuslineData {
 	};
 	periodCost?: number;
 	todayCost?: number;
+	thinkingEnabled?: boolean;
 }
 
 // Legacy interface for backwards compatibility
@@ -72,6 +73,7 @@ export interface StatuslineData {
 	};
 	periodCost?: number;
 	todayCost?: number;
+	thinkingEnabled?: boolean;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -275,12 +277,13 @@ function calculateWeeklyDelta(
 }
 
 function formatPacingDelta(delta: number): string {
-	const sign = delta >= 0 ? "+" : "";
-	const value = `${sign}${delta.toFixed(1)}%`;
+	const inverted = -delta;
+	const sign = inverted >= 0 ? "+" : "";
+	const value = `${sign}${inverted.toFixed(1)}%`;
 
-	if (delta > 5) return colors.green(value);
-	if (delta > 0) return colors.lightGray(value);
-	if (delta > -10) return colors.yellow(value);
+	if (inverted > 5) return colors.green(value);
+	if (inverted > 0) return colors.lightGray(value);
+	if (inverted > -10) return colors.yellow(value);
 	return colors.red(value);
 }
 
@@ -361,6 +364,14 @@ function formatDailyPart(
 	return `${colors.gray("D:")} ${colors.gray("$")}${colors.dimWhite(formatCost(todayCost, config.cost.format))}`;
 }
 
+function formatThinkingPart(
+	thinkingEnabled: boolean,
+	config: StatuslineConfig["thinking"],
+): string {
+	if (!config.showDisabledWarning || thinkingEnabled) return "";
+	return colors.red("Thinking: OFF");
+}
+
 // ─────────────────────────────────────────────────────────────
 // MAIN RENDER FUNCTION - Raw data + config = output
 // ─────────────────────────────────────────────────────────────
@@ -420,6 +431,13 @@ export function renderStatuslineRaw(
 	const dailyPart = formatDailyPart(data.todayCost ?? 0, config.dailySpend);
 	if (dailyPart) sections.push(dailyPart);
 
+	// Thinking warning (last position)
+	const thinkingPart = formatThinkingPart(
+		data.thinkingEnabled ?? true,
+		config.thinking,
+	);
+	if (thinkingPart) sections.push(thinkingPart);
+
 	const output = sections.join(` ${sep} `);
 
 	if (config.oneLine) return output;
@@ -451,6 +469,7 @@ export function renderStatusline(
 		usageLimits: data.usageLimits,
 		periodCost: data.periodCost,
 		todayCost: data.todayCost,
+		thinkingEnabled: data.thinkingEnabled,
 	};
 
 	return renderStatuslineRaw(rawData, config);

@@ -19,7 +19,10 @@ export type ProgressBarColor =
 	| "red"
 	| "peach"
 	| "black"
-	| "white";
+	| "white"
+	| "purple"
+	| "blue"
+	| "cyan";
 export type ProgressBarBackground =
 	| "none"
 	| "dark"
@@ -100,5 +103,8 @@ export interface StatuslineConfig {
 	};
 	dailySpend: {
 		cost: CostConfig;
+	};
+	thinking: {
+		showDisabledWarning: boolean;
 	};
 }

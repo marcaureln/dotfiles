@@ -2,7 +2,10 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { defaultConfig, type StatuslineConfig } from "./lib/config";
+import {
+	loadConfig as loadStatuslineConfig,
+	type StatuslineConfig,
+} from "./lib/config";
 import { getContextData } from "./lib/context";
 import {
 	colors,
@@ -41,6 +44,7 @@ try {
 	normalizeResetsAt = (resetsAt: string) => resetsAt;
 }
 
+let getTodayRealCost: (() => number) | null = null;
 try {
 	const spendModule = await import("./lib/features/spend");
 	getPeriodCost = spendModule.getPeriodCost;
@@ -50,6 +54,13 @@ try {
 	// Spend tracking feature not available - that's OK!
 }
 
+try {
+	const loggerModule = await import("./lib/features/spend/payload-logger");
+	getTodayRealCost = loggerModule.getTodayRealCost;
+} catch {
+	// Payload logger not available
+}
+
 // Re-export from render-pure for backwards compatibility
 export {
 	renderStatusline,
@@ -57,21 +68,34 @@ export {
 	type UsageLimit,
 } from "./lib/render-pure";
 
-const CONFIG_FILE_PATH = join(import.meta.dir, "..", "statusline.config.json");
 const LAST_PAYLOAD_PATH = join(
 	import.meta.dir,
 	"..",
 	"data",
 	"last_payload.txt",
 );
+const CLAUDE_SETTINGS_PATH = join(
+	process.env.HOME || "",
+	".claude",
+	"settings.json",
+);
 
-async function loadConfig(): Promise<StatuslineConfig> {
+interface ClaudeSettings {
+	alwaysThinkingEnabled?: boolean;
+	effortLevel?: string;
+}
+
+async function loadClaudeSettings(): Promise<ClaudeSettings> {
 	try {
-		const content = await readFile(CONFIG_FILE_PATH, "utf-8");
+		const content = await readFile(CLAUDE_SETTINGS_PATH, "utf-8");
 		return JSON.parse(content);
 	} catch {
-		return defaultConfig;
+		return {};
 	}
+}
+
+async function loadConfig(): Promise<StatuslineConfig> {
+	return loadStatuslineConfig();
 }
 
 async function main() {
@@ -82,6 +106,7 @@ async function main() {
 		await writeFile(LAST_PAYLOAD_PATH, JSON.stringify(input, null, 2));
 
 		const config = await loadConfig();
+		const claudeSettings = await loadClaudeSettings();
 
 		// Get usage limits (if feature exists)
 		const usageLimits = getUsageLimits
@@ -137,18 +162,32 @@ async function main() {
 		let periodCost: number | undefined;
 		let todayCost: number | undefined;
 
-		if (getPeriodCost && getTodayCostV2 && normalizeResetsAt) {
+		if (getPeriodCost && normalizeResetsAt) {
 			const normalizedPeriodId = currentResetsAt
 				? normalizeResetsAt(currentResetsAt)
 				: null;
 			periodCost = normalizedPeriodId ? getPeriodCost(normalizedPeriodId) : 0;
+		}
+
+		// Get today's cost from payloads (more accurate than DB)
+		if (getTodayRealCost) {
+			todayCost = getTodayRealCost();
+		} else if (getTodayCostV2) {
 			todayCost = getTodayCostV2();
 		}
 
 		const data: StatuslineData = {
 			branch: formatBranch(git, config.git),
 			dirPath: formatPath(input.workspace.current_dir, config.pathDisplayMode),
-			modelName: input.model.display_name,
+			modelName: (() => {
+				const shortName = input.model.display_name.replace(
+					/\s*\((\d+[KM])\s+context\)/i,
+					" $1",
+				);
+				return claudeSettings.effortLevel
+					? `${shortName} [${claudeSettings.effortLevel}]`
+					: shortName;
+			})(),
 			sessionCost: formatCost(
 				input.cost.total_cost_usd,
 				config.session.cost.format,
@@ -173,6 +212,7 @@ async function main() {
 				},
 			}),
 			...((getPeriodCost || getTodayCostV2) && { periodCost, todayCost }),
+			thinkingEnabled: claudeSettings.alwaysThinkingEnabled ?? true,
 		};
 
 		const output = renderStatusline(data, config);
@@ -187,4 +227,6 @@ async function main() {
 	}
 }
 
-main();
+if (import.meta.main) {
+	main();
+}
