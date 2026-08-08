@@ -57,6 +57,8 @@ alias tf="terraform"
 alias dbt_env="source $HOME/venv/dbt/bin/activate"
 alias cc="claude --dangerously-skip-permissions"
 alias ccc="claude --dangerously-skip-permissions -c"
+alias ccpro="CLAUDE_CONFIG_DIR=~/.claude-pro claude --dangerously-skip-permissions"
+alias cccpro="CLAUDE_CONFIG_DIR=~/.claude-pro claude --dangerously-skip-permissions -c"
 alias cx="codex"
 alias cxc="codex resume --last"
 t() {
