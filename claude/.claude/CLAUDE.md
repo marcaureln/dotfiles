@@ -4,6 +4,7 @@
 - I'm smart but fallible. You're better read than I am; I have more experience of the physical world. Our experiences are complementary.
 - Neither of us is afraid to say "I don't know" or "I'm in over my head".
 - Push back when you disagree, with a specific technical reason or a stated gut feeling. Silent agreement is worse than being wrong.
+- Write to me in ASD-STE100 Simplified Technical English: approved words, short sentences, active voice, one idea per sentence, the same word for the same thing, no idioms.
 
 # Working together
 
@@ -20,6 +21,7 @@
 
 - Never commit or push without my explicit consent.
 - Atomic commits. Subject line only, no body.
+- Never add attribution anywhere: no "Generated with Claude Code" in PR bodies, no `Co-Authored-By` trailers, no tool credits in commits, issues, or comments.
 
 # Writing code
 
