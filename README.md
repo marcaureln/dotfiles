@@ -3,7 +3,7 @@
 ```bash
 brew install stow
 git clone git@github.com:marcaureln/dotfiles.git ~/dotfiles
-cd ~/dotfiles && stow zsh git tmux vim claude config
+cd ~/dotfiles && stow zsh git tmux vim claude claude-pro codex config
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
