@@ -1,20 +1,30 @@
-# Prompt
-command -v starship >/dev/null && eval "$(starship init zsh)"
+# ------------------------------------------------------------
+# Standard locations
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 # ------------------------------------------------------------
-# Environnement & PATH
+# Environment
 export VOLTA_HOME="$HOME/.volta"
+export VOLTA_FEATURE_PNPM=1       # pnpm support in Volta
 export BUN_INSTALL="$HOME/.bun"
 export RULEKIT_PATH="$HOME/vue-rulekit"
 export CLAUDE_CODE_NO_FLICKER=1
-
-export PATH="/opt/homebrew/lib/ruby/gems/4.0.0/bin:$HOME/.gem/ruby/4.0.0/bin:$HOME/fvm/default/bin:$VOLTA_HOME/bin:$BUN_INSTALL/bin:$HOME/.rvm/bin:/opt/homebrew/opt/ruby/bin:/usr/local/opt/libpq/bin:$PATH"
-
-# Activation d’options utiles
-export VOLTA_FEATURE_PNPM=1       # support pnpm dans Volta
+export GPG_TTY=$(tty)
 
 # Pager: -R keep colors, --mouse enable wheel scrolling, --wheel-lines smoother
 export LESS='-R --mouse --wheel-lines=3'
+
+# ------------------------------------------------------------
+# PATH
+export PATH="/opt/homebrew/lib/ruby/gems/4.0.0/bin:$HOME/.gem/ruby/4.0.0/bin:$HOME/fvm/default/bin:$VOLTA_HOME/bin:$BUN_INSTALL/bin:$HOME/.rvm/bin:/opt/homebrew/opt/ruby/bin:/usr/local/opt/libpq/bin:$PATH"
+export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools:$HOME/.cargo/bin"
+
+# ------------------------------------------------------------
+# Prompt
+command -v starship >/dev/null && eval "$(starship init zsh)"
 
 # ------------------------------------------------------------
 # History (set here — Ubuntu's /etc/zshrc doesn't, unlike macOS)
@@ -38,10 +48,19 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # case-insensitive matching
 zstyle ':completion:*' list-colors ''                       # colorize the menu
 
-# ------------------------------------------------------------
-# Initialize tools
 [[ -s "$BUN_INSTALL/_bun"            ]] && source "$BUN_INSTALL/_bun"
 [[ -f "$HOME/.dbt-completion.bash"   ]] && source "$HOME/.dbt-completion.bash"
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f ~/.dart-cli-completion/zsh-config.zsh ]] && . ~/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
+# History-based auto-complete (brew on macOS, apt on Linux)
+for f in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+         /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do
+  [[ -f $f ]] && source "$f" && break
+done
 
 # ------------------------------------------------------------
 # Aliases
@@ -55,12 +74,15 @@ alias kns="kubens"
 alias kctx="kubectx"
 alias tf="terraform"
 alias dbt_env="source $HOME/venv/dbt/bin/activate"
-alias cc="claude --dangerously-skip-permissions"
-alias ccc="claude --dangerously-skip-permissions -c"
-alias ccpro="CLAUDE_CONFIG_DIR=~/.claude-pro claude --dangerously-skip-permissions"
-alias cccpro="CLAUDE_CONFIG_DIR=~/.claude-pro claude --dangerously-skip-permissions -c"
-alias cx="codex"
-alias cxc="codex resume --last"
+alias cc="claude --dangerously-skip-permissions -c"
+alias ccpro="CLAUDE_CONFIG_DIR=~/.claude-pro claude --dangerously-skip-permissions -c"
+alias cx="codex resume --last"
+alias tml="tmux list-sessions"
+alias tma="tmux attach"
+alias tk='tmux kill-session -t'
+
+# ------------------------------------------------------------
+# Functions
 t() {
   local name="$(basename "${1:-$PWD}" | tr -d .)"
   tmux has-session -t "=$name" 2>/dev/null || tmux new-session -d -s "$name"
@@ -70,20 +92,6 @@ t() {
     tmux attach -t "=$name"
   fi
 }
-alias tml="tmux list-sessions"
-alias tma="tmux attach"
-alias tk='tmux kill-session -t'
-
-export GPG_TTY=$(tty)
-
-# Android
-export PATH=$PATH:~/Library/Android/sdk/platform-tools
-
-# Rust
-export PATH=$PATH:~/.cargo/bin
-
-# ------------------------------------------------------------
-# End of ~/.zshrc
 
 # Lazy-load SDKMAN
 sdk() {
@@ -93,27 +101,9 @@ sdk() {
   command sdk "$@"
 }
 
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f ~/.dart-cli-completion/zsh-config.zsh ]] && . ~/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
-# Define standard locations
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
-
-# bun completions
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
-
-# History-based auto-complete (brew on macOS, apt on Linux)
-for f in /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
-         /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do
-  [[ -f $f ]] && source "$f" && break
-done
-
 # AWS helpers (ssm, etc.) — see ~/.zsh/aws.zsh
 [ -f ~/.zsh/aws.zsh ] && source ~/.zsh/aws.zsh
 
+# ------------------------------------------------------------
+# Machine-specific overrides, last so they win
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
