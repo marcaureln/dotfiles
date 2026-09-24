@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
@@ -9,9 +10,14 @@ import type { CachedUsageLimits, UsageLimits } from "./types";
 const CACHE_DURATION_MS = 60 * 1000; // 1 minute
 const execFileAsync = promisify(execFile);
 
+const CONFIG_DIR = process.env.CLAUDE_CONFIG_DIR;
+const ACCOUNT_SUFFIX = CONFIG_DIR
+	? `-${createHash("sha256").update(CONFIG_DIR).digest("hex").slice(0, 8)}`
+	: "";
+
 function getCacheFilePath(): string {
 	const projectRoot = join(import.meta.dir, "..", "..", "..", "..");
-	return join(projectRoot, "data", "usage-limits-cache.json");
+	return join(projectRoot, "data", `usage-limits-cache${ACCOUNT_SUFFIX}.json`);
 }
 
 export async function getCredentials(): Promise<string | null> {
@@ -29,7 +35,7 @@ async function getClaudeCodeTokenFromKeychain(): Promise<string | null> {
 		const { stdout } = await execFileAsync("security", [
 			"find-generic-password",
 			"-s",
-			"Claude Code-credentials",
+			`Claude Code-credentials${ACCOUNT_SUFFIX}`,
 			"-w",
 		]);
 
@@ -41,7 +47,10 @@ async function getClaudeCodeTokenFromKeychain(): Promise<string | null> {
 
 async function getClaudeCodeTokenFromFile(): Promise<string | null> {
 	try {
-		const credentialsPath = join(homedir(), ".claude", ".credentials.json");
+		const credentialsPath = join(
+			CONFIG_DIR ?? join(homedir(), ".claude"),
+			".credentials.json",
+		);
 		if (!existsSync(credentialsPath)) {
 			return null;
 		}

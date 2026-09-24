@@ -75,8 +75,7 @@ const LAST_PAYLOAD_PATH = join(
 	"last_payload.txt",
 );
 const CLAUDE_SETTINGS_PATH = join(
-	process.env.HOME || "",
-	".claude",
+	process.env.CLAUDE_CONFIG_DIR || join(process.env.HOME || "", ".claude"),
 	"settings.json",
 );
 
