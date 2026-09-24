@@ -1,0 +1,8 @@
+#!/bin/sh
+# Strips AI attribution that tool settings fail to suppress.
+sed -i.bak -E '/^[Cc]o-[Aa]uthored-[Bb]y:/d; /Generated with /d' "$1" && rm -f "$1.bak"
+
+# A global core.hooksPath hides the repo's own hooks, so chain to it.
+repo_hook="$(git rev-parse --git-dir)/hooks/commit-msg"
+[ -x "$repo_hook" ] && exec "$repo_hook" "$@"
+exit 0

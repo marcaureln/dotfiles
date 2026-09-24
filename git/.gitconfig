@@ -15,6 +15,7 @@
 	version = HTTP/2
 [core]
 	excludesfile = ~/.gitignore_global
+	hooksPath = ~/.config/git/hooks
 [commit]
 	template = ~/.stCommitMsg
 	gpgsign = true
