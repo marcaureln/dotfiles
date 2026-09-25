@@ -7,3 +7,7 @@
 config/.config/opencode/plugins/gk-hooks.js
 config/.config/gh/hosts.yml
 config/.config/opencode/package-lock.json
+config/.config/opencode/node_modules/
+config/.config/opencode/package.json
+config/.config/opencode/bun.lock
+config/.config/opencode/skills/
