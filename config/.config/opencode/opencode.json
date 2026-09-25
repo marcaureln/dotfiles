@@ -5,9 +5,9 @@
   "autoupdate": true,
   "permission": {
     "read": {
-      ".env": "allow",
-      ".env.*": "allow",
-      ".env-*": "allow"
+      ".env": "deny",
+      ".env.*": "deny",
+      ".env-*": "deny"
     },
     "external_directory": "allow",
     "bash": {
@@ -19,7 +19,6 @@
       ":(){:|:&};:": "deny"
     }
   },
-  "plugin": ["{env:HOME}/ponytail/.opencode/plugins/ponytail.mjs"],
   "mcp": {
     "chrome-devtools": {
       "type": "local",
@@ -32,10 +31,7 @@
     "fetch": {
       "type": "local",
       "command": ["uvx", "mcp-server-fetch"]
-    },
-    "solo": {
-      "type": "local",
-      "command": ["/Applications/Solo.app/Contents/MacOS/mcp"]
     }
   },
+  "share": "disabled"
 }
