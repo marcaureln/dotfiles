@@ -80,6 +80,7 @@ alias cx="codex"
 alias tml="tmux list-sessions"
 alias tma="tmux attach"
 alias tk='tmux kill-session -t'
+alias unstow='stow --delete'
 
 # ------------------------------------------------------------
 # Functions
